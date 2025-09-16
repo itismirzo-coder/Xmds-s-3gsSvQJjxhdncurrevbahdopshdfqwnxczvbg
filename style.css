@@ -263,7 +263,6 @@ body {
 .ad-block {
   margin-top: 20px;
   width: 100%;
-display: none !important;
 }
 .ad-content {
   background: var(--ad-bg);
