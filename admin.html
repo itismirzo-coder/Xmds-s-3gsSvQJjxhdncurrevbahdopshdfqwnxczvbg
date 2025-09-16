@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin - TenTest</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="container" style="padding-top:40px;">
+    <div class="card" style="max-width:700px;margin:0 auto;">
+      <div class="card-body">
+        <h2>Admin - Login yaratish</h2>
+        <p class="muted">Bu sahifa orqali yangi login/parol yaratasiz. faqat siz foydalaning.</p>
+
+        <div class="admin-protect">
+          <label>Admin kalitni kiriting (ADMIN KEY):</label>
+          <input id="adminKeyInput" type="password" />
+          <button id="adminUnlock" class="btn btn-primary" style="margin-top:8px;">Ochilish</button>
+          <div id="adminUnlockMsg" class="muted"></div>
+        </div>
+
+        <div id="adminPanel" style="display:none;">
+          <div style="display:flex;gap:10px;">
+            <div style="flex:1;">
+              <label>Yangi login (username)</label>
+              <input id="newLogin" type="text" />
+            </div>
+            <div style="flex:1;">
+              <label>Yangi parol</label>
+              <input id="newPass" type="password" />
+            </div>
+          </div>
+
+          <div style="margin-top:10px;">
+            <label>Muddati (kunlarda)</label>
+            <input id="newDays" type="number" value="30" min="1" style="width:140px;" />
+            <button id="createCred" class="btn btn-primary">Yaratish</button>
+          </div>
+
+          <hr />
+
+          <h3>Hozirgi loginni o'chirish</h3>
+          <div style="display:flex;gap:8px;">
+            <input id="delLogin" type="text" placeholder="loginni kiriting" />
+            <button id="delBtn" class="btn btn-secondary">O'chirish</button>
+          </div>
+
+          <div id="adminMsg" class="muted" style="margin-top:12px;"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    // TODO: agar siz app.js ichidagi ADMIN_KEYni o'zgartirsangiz, quyidagi ADMIN_KEYni ham moslang:
+    const ADMIN_KEY = "1234567890"; // <-- shu qiymatni app.js bilan bir xil qiling
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAEVEg_7meQP9Y7X2mDX781Kn6tbT-CMDg",
+      authDomain: "mynewtentest.firebaseapp.com",
+      projectId: "mynewtentest",
+      storageBucket: "mynewtentest.firebasestorage.app",
+      messagingSenderId: "1008038835527",
+      appId: "1:1008038835527:web:a2f8d0878cd135342b8862",
+      measurementId: "G-7D94P63KLB"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // sha256 helper
+    async function sha256Hex(str) {
+      const enc = new TextEncoder();
+      const data = enc.encode(str);
+      const hash = await crypto.subtle.digest('SHA-256', data);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    const adminUnlock = document.getElementById('adminUnlock');
+    const adminKeyInput = document.getElementById('adminKeyInput');
+    const adminUnlockMsg = document.getElementById('adminUnlockMsg');
+    const adminPanel = document.getElementById('adminPanel');
+
+    adminUnlock.addEventListener('click', () => {
+      const v = adminKeyInput.value || '';
+      if (v === ADMIN_KEY) {
+        adminUnlockMsg.textContent = 'Admin panel ochildi.';
+        adminPanel.style.display = 'block';
+        adminKeyInput.value = '';
+      } else {
+        adminUnlockMsg.textContent = 'Admin kalit noto\'g\'ri.';
+      }
+    });
+
+    document.getElementById('createCred').addEventListener('click', async () => {
+      const un = document.getElementById('newLogin').value && document.getElementById('newLogin').value.trim();
+      const pw = document.getElementById('newPass').value || '';
+      const days = parseInt(document.getElementById('newDays').value || '30', 10);
+      const adminMsg = document.getElementById('adminMsg');
+      if (!un || !pw) { adminMsg.textContent = 'Iltimos login va parol kiriting.'; return; }
+      try {
+        const h = await sha256Hex(pw);
+        const now = firebase.firestore.Timestamp.fromDate(new Date());
+        const expires = firebase.firestore.Timestamp.fromDate(new Date(Date.now() + days * 24*3600*1000));
+        await db.collection('credentials').doc(un.toLowerCase()).set({
+          passwordHash: h,
+          createdAt: now,
+          expiresAt: expires
+        });
+        adminMsg.textContent = `Yaratildi: ${un} (muddat ${days} kun).`;
+        document.getElementById('newLogin').value = '';
+        document.getElementById('newPass').value = '';
+      } catch (e) {
+        console.error(e);
+        adminMsg.textContent = 'Xato yuz berdi: ' + (e.message || e);
+      }
+    });
+
+    document.getElementById('delBtn').addEventListener('click', async () => {
+      const del = document.getElementById('delLogin').value && document.getElementById('delLogin').value.trim().toLowerCase();
+      const adminMsg = document.getElementById('adminMsg');
+      if (!del) { adminMsg.textContent = 'Iltimos o\'chiriladigan loginni kiriting.'; return; }
+      try {
+        await db.collection('credentials').doc(del).delete();
+        adminMsg.textContent = `O'chirildi: ${del}`;
+        document.getElementById('delLogin').value = '';
+      } catch (e) {
+        console.error(e);
+        adminMsg.textContent = 'Xato: ' + (e.message || e);
+      }
+    });
+  </script>
+</body>
+</html>

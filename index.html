@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TenTest</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- ===== Asosiy sayt (siz bergan HTMLning saqlangan yoki biroz o'zgartirilgan versiyasi) ===== -->
+  <div class="bg-gradient"></div>
+  <header class="site-header">
+    <div class="brand">
+      <div class="logo">∴</div>
+      <div class="brand-text">
+        <h1>TenTest</h1>
+        <p>10 ta savol, takrorlanmas sessiyalar, sof mantiq.</p>
+      </div>
+    </div>
+    <div>
+      <button id="themeToggle" class="btn btn-ghost">🌗</button>
+      <button id="resetBankBtn" class="btn btn-ghost">Boshidan</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section id="screen-start" class="screen active">
+      <div class="card">
+        <div class="card-body">
+          <div class="stats-pill" id="lifetimeStats"></div>
+          <ul class="rules">
+            <li><strong>Format:</strong> Har sessiya 10 ta test savol.</li>
+            <li><strong>Takrorlanish:</strong> Oldingi sessiyadagi savollar keyingi sessiyalarda qaytarilmaydi.</li>
+            <li><strong>Mukofot:</strong> 10/10 bo‘lsangiz, 5000 soom mukofotni qo'lga kiritasiz.</li>
+            <li><strong>Vaqt:</strong> Qulaylik uchun cheklov yo‘q, lekin tezlik — fokus.</li>
+          </ul>
+          <div class="start-cta">
+            <button id="startBtn" class="btn btn-primary btn-xl">Testni boshlash</button>
+            <div class="ad-block">
+              <div class="ad-content">
+                <h3>Bu yerda sizning reklamangiz bo'lishi mumkin</h3>
+                <p>E'tiborni tortadigan joy, biznesingizni rivojlantirish uchun ajoyib imkoniyat!</p>
+                <a id="telLink" href="tel:+998338423885" class="btn btn-ad">Batafsil ma'lumot</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-quiz" class="screen">
+      <div class="card">
+        <div class="card-body">
+          <div class="topbar">
+            <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+            <div class="counter" id="counter">1 / 10</div>
+          </div>
+          <h3 class="question" id="questionText">Savol yuklanmoqda...</h3>
+          <ul class="options" id="optionsList"></ul>
+          <div class="actions">
+            <button id="checkBtn" class="btn btn-primary" disabled>Tekshirish</button>
+            <button id="nextBtn" class="btn btn-secondary" disabled>Keyingi</button>
+          </div>
+          <div class="ad-block">
+            <div class="ad-content">
+              <h3>Bu yerda sizning reklamangiz bo'lishi mumkin</h3>
+              <p>E'tiborni tortadigan joy, biznesingizni rivojlantirish uchun ajoyib imkoniyat!</p>
+              <a href="#" class="btn btn-ad">Batafsil ma'lumot</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screen-result" class="screen">
+  <div class="card">
+    <div class="card-body">
+      <div class="result-body">
+        <div class="score-line">
+          <div class="score-badge" id="scoreBadge">0 / 10</div>
+          <div class="score-message" id="scoreMessage"></div>
+        </div>
+        <p id="withdrawMessage" class="hidden">
+          Mukofot miqdori 5 000 000 soomga yetdi. Uni haqiqiy pulga almashtirish uchun murojaat qilishingiz mumkin.
+        </p>
+        <div class="actions">
+          <button id="againBtn" class="btn btn-primary btn-xl">Yana 10 ta savol</button>
+          <button id="reviewBtn" class="btn btn-secondary">Savollarni ko‘rish</button>
+          <!-- ✅ Qo‘shilgan yangi tugmalar -->
+          <button id="endSessionBtn" class="btn btn-secondary">Sessiyani yakunlash</button>
+          <button id="retryBtn" class="btn btn-secondary">Sessiyani qayta topshirish</button>
+          <button id="nextSessionBtn" class="btn btn-primary">Keyingi sessiya</button>
+        </div>
+        <div class="review hidden" id="reviewList"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+  </main>
+
+  <footer class="site-footer">
+    <span>© <span id="year"></span> TenTest — fokus, ritm va tafakkur.</span>
+  </footer>
+
+  <canvas class="fx-layer" id="fxLayer"></canvas>
+
+  <!-- ===== Login modal (har kuni bir marta so'raladi) ===== -->
+  <div id="loginOverlay" class="overlay hidden" aria-hidden="true">
+    <div class="modal">
+      <h2>Dasturga kirish</h2>
+      <p>Dasturga kirish uchun login va parol kiriting. Agar login va parol yo'q bo'lsa, <strong>Kirish</strong> yonidagi <strong>Obuna sotib olish</strong> tugmasini bosing.</p>
+      <div class="form-row">
+        <label for="loginUsername">Login</label>
+        <input id="loginUsername" type="text" autocomplete="username" />
+      </div>
+      <div class="form-row">
+        <label for="loginPassword">Parol</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" />
+      </div>
+      <div class="modal-actions">
+        <button id="doLoginBtn" class="btn btn-primary">Kirish</button>
+        <button id="buyBtn" class="btn btn-ad">Obuna sotib olish</button>
+      </div>
+      <div id="loginMsg" class="muted"></div>
+    </div>
+  </div>
+
+  <!-- ===== Buy / Call modal ===== -->
+  <div id="callModal" class="overlay hidden" aria-hidden="true">
+    <div class="modal">
+      <h3>Obuna sotib olish</h3>
+      <p>Login va parol olish uchun quyidagi raqamga telefon qiling yoki telegram orqali bog'laning :</p>
+      <p><strong>+998 33 842 38 85</strong></p>
+      <div class="modal-actions">
+        <a id="telLink" href="tel:+998338423885" class="btn btn-primary">Telefon qilish</a>
+        <button id="callClose" class="btn btn-secondary">Bekor qilish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <!-- App script -->
+  <script src="app.js"></script>
+</body>
+</html>
