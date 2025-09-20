@@ -21,7 +21,7 @@ const db = firebase.firestore();
    Administrator sahifasiga kirib yangi login/parol yaratish uchun kerak bo'ladi.
    Siz uni admin.html yoki admin.js ichida ham tekshirasiz.
 */
-const ADMIN_KEY = "1234567890"; // <-- BU YERNI O'ZGARTIRING !!!
+const ADMIN_KEY = "200027"; // <-- BU YERNI O'ZGARTIRING !!!
 
 /* ====== Sizning asli quiz kodlaringiz (meningiz bergan kodni shu yerga joyladim)
    - Men asl kodni biroz tuzatdim, va oxiriga QUESTIONS massivini qo'shdim.
