@@ -517,12 +517,12 @@ function finishSession() {
   setScreen(screenResult);
   scoreBadge.textContent = `${session.correct} / ${SESSION_SIZE}`;
   if (perfectSession) {
-    scoreMessage.textContent = "Ideal natija! Mantiqiy fokus zo‘r! +5000 soom yutuq! Yutuq miqdori 5000000 soomdan oshganda, yutuqni haqiqiy pulga almashtirish uchun murojaat qilishingiz mumkin.";
+    scoreMessage.textContent = "Ideal natija! Eslab qolish qobiliyatingiz zo‘r! +5000 soom yutuq! Yutuq miqdori 5000000 soomdan oshganda, yutuqni haqiqiy pulga almashtirish uchun murojaat qilishingiz mumkin.";
     confetti();
   } else if (session.correct >= 7) {
-    scoreMessage.textContent = "Zo‘r ishladingiz! Yana ozroq diqqat — mukofot sizniki.";
+    scoreMessage.textContent = "Zo‘r ishladingiz! Yana ozroq diqqat va mukofot sizniki.";
   } else {
-    scoreMessage.textContent = "Harakat davom etadi. Mantiq mashqi — kuch!";
+    scoreMessage.textContent = "Harakat davom etadi. Yana bir marta urinib ko'ring, natijani sezasiz!";
   }
 
   if (stats.totalPrize >= 5000000) {
